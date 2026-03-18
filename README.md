@@ -1,5 +1,13 @@
-# CAUTION
+# Cool ARDUINO projects!
 
-The level's gonna lower here!
+#### CAUTION
 
-## Cool tinkercad Arduino projects made with TinkerCAD!
+> The level's gonna lower here!
+
+Check everything out on [TINKERCAD](https://www.tinkercad.com/users/kzb2Yi5epDI?type=circuits)
+
+<hr>
+The world's gonna be ending with AI and I'll be learning C in my room.
+<hr>
+
+` "I'd like to say thank you on behalf of the group and ourselves, and I hope we've passed the audition." `
