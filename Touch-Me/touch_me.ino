@@ -8,6 +8,8 @@ button
 
 // ------------- CONSTANTS -------------
 
+#include <LiquidCrystal.h>
+
 #define C4 (261)
 #define E4 (329)
 #define G4 (391)
@@ -25,11 +27,14 @@ const uint16_t FREQ[] = {C4, E4, G4, C5};
 
 // ------------- STATE VARIABLES -------------
 
+LiquidCrystal lcd(4, 3, A2, A3, A4, A5);
+
 uint8_t SEQ[SEQ_SIZE];
 int8_t seq_ptr = -1;
 
 uint8_t led_idx;
-uint8_t cnt = 0;
+uint8_t player_ptr = 0;
+uint8_t score = 0;
 
 bool pressed;
 
@@ -54,20 +59,26 @@ void setup(){
   pinMode(PIEZO_PIN, OUTPUT);
   randomSeed(analogRead(A0));
   
+  lcd.begin(16, 2);
+  
   game_win();
 }
 
 void loop(){
+
+  if (seq_ptr + 1 >= SEQ_SIZE) game_win();
+
   play_sequence();
 
-  cnt = 0;
-  while (cnt <= seq_ptr) {
+  player_ptr = 0;
+  while (player_ptr <= seq_ptr) {
     if (read_player()) {
       game_over();
       return;
     }
   }
   
+  increase_score();
   delay(DELAY_TIME * 2);
 }
 
@@ -85,10 +96,19 @@ void flash(uint8_t led_pin, uint16_t freq, uint16_t delay_time) {
 // Animation
 
 void game_win() {
+  
+  if (score > 0) {
+  	lcd.clear();
+    lcd.print("YOU WIN");
+  }
+  else {
+    lcd.clear();
+    lcd.print("GAME START");
+  }
 
-  for (uint8_t i = 0; i < 2; ++i)
+  for (uint8_t i = 0; i < 5; ++i)
     for (uint8_t j = 0; j < PINS_SIZE; ++j)
-      flash(LED_PIN[j], FREQ[j], 100);
+      flash(LED_PIN[j], FREQ[j], 50);
       
   for (uint8_t j = 0; j < PINS_SIZE; ++j) {
       digitalWrite(LED_PIN[j], HIGH);
@@ -101,12 +121,17 @@ void game_win() {
   delay(500);
 
   seq_ptr = -1;
-  return;
 
+  lcd.clear();
+  
+  score = 0;
 }
 
 void game_over() {
   tone(PIEZO_PIN, 100, DELAY_TIME * 2);
+
+  lcd.clear();
+  lcd.print("YOU LOOSE");
   
   for (uint8_t i = 0; i < PINS_SIZE; ++i)
     digitalWrite(LED_PIN[i], HIGH);
@@ -118,14 +143,22 @@ void game_over() {
   seq_ptr = -1;
   delay(DELAY_TIME * 2);
 
+  lcd.clear();
+  
+  score = 0;
 }
 
 
+void increase_score(){
+  ++score;
+  lcd.clear();
+  if (score < 10) lcd.print(score);
+  else lcd.print(score);
+}
+
 // Interaction
 
-void play_sequence() {
-  if (seq_ptr + 1 >= SEQ_SIZE) game_win();
-  
+void play_sequence(){
   SEQ[++seq_ptr] = random(PINS_SIZE);
 
   for (uint8_t i = 0; i <= seq_ptr; ++i) {
@@ -148,9 +181,9 @@ int read_player() {
       
       flash(LED_PIN[i], FREQ[i], DELAY_TIME);
 
-      if (i != SEQ[cnt]) return 1;
+      if (i != SEQ[player_ptr]) return 1;
       
-      ++cnt;      
+      ++player_ptr;
       
       return 0;
 
