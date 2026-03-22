@@ -1,4 +1,4 @@
-# LED Button Switch
+# Morse Code
 
 ![Morse Code Circuit](https://csg.us-east-1.prd.tinkercad.com/things/bCWpJmKQPAS/t725.png?rev=1773705869742485000&s=&v=1&type=circuits)
 
