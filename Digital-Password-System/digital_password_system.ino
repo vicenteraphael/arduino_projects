@@ -13,6 +13,11 @@
 #define PASSWORD_SIZE (28)
 #define WARNING_DELAY (2000)
 
+#define ENTER ('A')
+#define CHANGE_PASSWORD ('B')
+#define CLEAR ('C')
+#define DELETE ('D')
+
 
 // ------------- INSTANCES -------------
 
@@ -79,11 +84,9 @@ void decrease_cursor();
 
 // Functions
 
-void new_password();
-
 void enter(char[], uint8_t*);
 
-void new_password();
+void change_password();
 
 void clear(char[], uint8_t*, const char[]);
 
@@ -127,10 +130,10 @@ bool read_key(char string[], uint8_t *ptr, const char text[]){
 bool print_key(char key, char string[], uint8_t *ptr, const char text[]){
   
   switch (key) {
-    case 'A': enter(string, ptr); return true; break;
-    case 'B':  new_password(); break;
-    case 'D': if (*ptr > 0) _delete(string, ptr); break;
-    case 'C': clear(string, ptr, text); break;
+    case ENTER: enter(string, ptr); return true; break;
+    case CHANGE_PASSWORD:  change_password(); break;
+    case DELETE: if (*ptr > 0) _delete(string, ptr); break;
+    case CLEAR: clear(string, ptr, text); break;
     default: if (*ptr < PASSWORD_SIZE - 1) update_input(string, ptr);
   }
 
@@ -207,7 +210,7 @@ void enter(char string[], uint8_t *ptr){
   string[*ptr] = '\0';
 }
 
-void new_password(){
+void change_password(){
 
   // Current password
   warning("ENTER CURRENT", "PASSWORD");
@@ -226,30 +229,30 @@ void new_password(){
 
   // New password
   warning("INFORM NEW", "PASSWORD");
-  char new_password1[PASSWORD_SIZE];
-  uint8_t new_password1_ptr = 0;
+  char new_password[PASSWORD_SIZE];
+  uint8_t new_password_ptr = 0;
   
   lcd.clear();
   lcd.print("N:");
 
   while (true) {
-    if (read_key(new_password1, &new_password1_ptr, "N:")) {
+    if (read_key(new_password, &new_password_ptr, "N:")) {
       break;
     }
   }
 
   // Confirm new password
   warning("CONFIRM NEW", "PASSWORD");
-  char new_password2[PASSWORD_SIZE];
-  uint8_t new_password2_ptr = 0;
+  char new_password_confirm[PASSWORD_SIZE];
+  uint8_t new_password_confirm_ptr = 0;
 
   lcd.clear();
   lcd.print("N:");
 
   while (true) {
-    if (read_key(new_password2, &new_password2_ptr, "N:")) {
-      if (strcmp(new_password1, new_password2) == 0) {
-        strcpy(password, new_password2);
+    if (read_key(new_password_confirm, &new_password_confirm_ptr, "N:")) {
+      if (strcmp(new_password, new_password_confirm) == 0) {
+        strcpy(password, new_password);
         warning("SUCCESS", "");
       }
       else
