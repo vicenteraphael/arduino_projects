@@ -6,6 +6,8 @@
 
 Check everything out on [TINKERCAD](https://www.tinkercad.com/users/kzb2Yi5epDI?type=circuits)
 
+Made with PlatformIO and VSCode
+
 <hr>
 The world's gonna be ending with AI and I'll be learning C in my room.
 <hr>
